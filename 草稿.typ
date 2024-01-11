@@ -44,7 +44,8 @@
 - EthereumOS
   - [ethOS - Crypto native mobile operating system (ethosmobile.org)](https://www.ethosmobile.org/)以安卓为基础开发的区块链OS，[ethOS Mobile (readme.io)](https://ethosmobile.readme.io/)。
 - Substrate简介。
-- 多项研究表明，区块链技术在诸如城市管理 @bcCityGov ，能源系统和营销等领域有相当大的潜力，但尚未有在操作系统领域应用区块链技术的先例。
+- 多项研究表明，区块链技术在诸如城市管理 @bcCityGov ，能源系统 @bcFuelEnergy 等领域有相当大的潜力，但尚未有在操作系统领域应用区块链技术的先例。
+- These studies suggest that blockchain technology affects operating systems by improving efficiency and battery consumption, revolutionizing payment and credit systems in banks, and transforming business processes in various sectors, including accounting, auditing, and data analysis. @bcSmartphone
 
 > 思路：syscall，密码学
 
