@@ -4,14 +4,16 @@
   name
   par()[#text(size: 0em)[#h(0em)]]
 }
-
-#set heading(numbering: "1.1.1")
-
+//
+#show link: name => underline()[#name]
+// 设置标题序号格式
+#set heading(numbering: "1.")
+// 文档标题
 #align(center)[
-    #block(text(weight: 700, 1.75em, "开题报告"))
-    #v(2em, weak: true)
-  ]
-
+  #block(text(weight: 700, 1.75em, "开题报告"))
+  #v(2em, weak: true)
+]
+// 双栏布局
 #show: columns.with(2, gutter: 1.4em)
 
 = 选题依据
@@ -39,13 +41,24 @@
 
 == 国内外研究现状与发展趋势
 
-- LibertyOS
-  - LibertyOS是世界上上第一个区块链操作系统。LibertyOS 结合了区块链技术和加密货币技术，为操作系统用户创造了新的用户体验。LibertyOS的创始团队认为，现代操作系统将客户视为商品，可以出售给广告商和其他非政府组织或政府组织。像 Windows 和 macOS 这样的现代操作系统正在客户不知情的前提下从他们那里收集信息，甚至访问和操作用户的所有文件和数据。而LibertyOS 为这种情况提供了一个解决方案。LibertyOS 由操作系统的用户100% 拥有。没有必要连接到任何公司，所有的数据都是100% 你的。另一方面，LibertyOS 也为广告客户提供了接触他们客户的途径。这是通过一个点对点令牌模型完成的，该模型直接向广告的观众支付费用。LibertyOS 的本地令牌是 LIB 令牌。广告商必须支付 LIB 令牌和用户收到观看广告的 LIB 令牌。然后，用户可以使用这些 LIB 令牌向他们喜欢的项目捐款，这样就可以激励创建一个开放自由的开发者社区。然而，LibertyOS对现代操作系统的改良尚且停留在用户程序层面，它注重保护用户数据隐私安全性和提升用户体验，而并未使用区块链的优良特性对操作系统内核加以保护。
-- EthereumOS
-  - [ethOS - Crypto native mobile operating system (ethosmobile.org)](https://www.ethosmobile.org/)以安卓为基础开发的区块链OS，[ethOS Mobile (readme.io)](https://ethosmobile.readme.io/)。
-- Substrate简介。
-- 多项研究表明，区块链技术在诸如城市管理 @bcCityGov ，能源系统 @bcFuelEnergy 等领域有相当大的潜力，但尚未有在操作系统领域应用区块链技术的先例。
-- These studies suggest that blockchain technology affects operating systems by improving efficiency and battery consumption, revolutionizing payment and credit systems in banks, and transforming business processes in various sectors, including accounting, auditing, and data analysis. @bcSmartphone
+=== 现阶段区块链技术的应用场景
+
+多项研究表明，区块链技术在诸如城市管理 @bcCityGov ，能源系统 @bcFuelEnergy 等领域有相当大的潜力。雄安新区区块链实验室于2020年发布的雄安区块链底层系统（1.0）是我国首个城市级区块链底层操作系统。该自主可控的底层平台采用分层多链结构，将网络系统划分为核心链和应用链，旨在构建城市级的可信基础设施。为避免资金在使用过程中的截留或者挪用风险，实验室开发上线了政府投资项目资金管理区块链系统，用区块链上的信息流驱动资金流，从而将数字人民币和区块链技术深度融合，以实现资金的精准拨付、及时拨付和透明拨付。该底层操作系统对智能合约亦提供了支持，可以在满足条件时自动触发一些逻辑，例如在每月月末自动结算水电费等，以方便自动管理居民日常起居开支。
+
+=== 区块链技术在消费级设备上的应用
+
+目前大多数区块链节点是专门设计用于挖矿的计算机，然而诸如手机和可穿戴设备的消费级设备也可能也应当成为区块链网络中的一部分，尤其是在充电时 @bcSmartphone 。截至2017年，全球一共有7亿台正在运转的移动设备，其中44%的设备都是智能手机 @phoneNum 。
+
+=== 区块链操作系统LibertyOS
+
+LibertyOS是世界上第一个区块链操作系统。LibertyOS 结合了区块链技术和加密货币技术，为操作系统用户创造了新的用户体验。LibertyOS的创始团队认为，现代操作系统将客户视为商品，可以出售给广告商和其他非政府组织或政府组织。像 Windows 和 macOS 这样的现代操作系统正在客户不知情的前提下从他们那里收集信息，甚至访问和操作用户的所有文件和数据。而LibertyOS 为这种情况提供了一个解决方案。LibertyOS 由操作系统的用户100% 拥有。没有必要连接到任何公司，所有的数据都是100% 你的。另一方面，LibertyOS 也为广告客户提供了接触他们客户的途径。这是通过一个点对点令牌模型完成的，该模型直接向广告的观众支付费用。LibertyOS 的本地令牌是 LIB 令牌。广告商必须支付 LIB 令牌和用户收到观看广告的 LIB 令牌。然后，用户可以使用这些 LIB 令牌向他们喜欢的项目捐款，这样就可以激励创建一个开放自由的开发者社区。然而，LibertyOS对现代操作系统的改良尚且停留在用户程序层面，它注重保护用户数据隐私安全性和提升用户体验，而并未使用区块链的优良特性对操作系统内核加以保护。
+
+=== NEAR区块链操作系统
+
+NEAR在诞生之初只是一组普通的区块链协议。NEAR团队将他们的协议设计得简洁而灵活，并以三大特点博得了超10亿用户的青睐：易懂的账户表示法，Nightshade分片法和开发者友好的JavaScript开发套件。在日益风靡的Web 3.0浪潮下，NEAR团队与时俱进地将他们的协议升级为操作系统。
+
+=== 系统调用
+Linux内核建议的增添系统调用的场合：https://www.kernel.org/doc/html/latest/process/adding-syscalls.html?highlight=syscall_define
 
 > 思路：syscall，密码学
 
