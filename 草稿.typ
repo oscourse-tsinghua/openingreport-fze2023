@@ -38,7 +38,7 @@
   - 本研究旨在将区块链服务引入操作系统内核。该方案的建立和完善，可以极大改善上层应用程序开发者的开发体验。他们无需自行实现底层协议、点对点网络、数据存储等区块链协议栈，而是可以让操作系统内核为之代劳，从而将更多的精力投放在分布式应用程序的业务逻辑上，减轻重复且不必要的心智负担。
   - 内核态程序可以直接访问硬件资源和执行特权指令，无需额外通过系统调用进行上下文切换。因此，将用户程序改写移植为内核程序，有利于减少上下文切换成本，进而降低性能开销，为提高高负载任务的执行效率提供除优化任务本身以外的新途径。
 
-== 国内外研究现状与发展趋势
+== 国内外研究现状
 
 === 区块链技术现阶段应用场景
 
@@ -66,21 +66,21 @@ RISC-V指令集与区块链技术的结合点之一是开发区块链虚拟机�
 
 === 区块链与操作系统的融合领域发展现状
 
-#quote(block: true)[
-  有关区块链操作系统的链接，在谷歌上搜索blockchain applications in operating systems获得：
-  - #link("https://medium.com/nearprotocol/introducing-the-blockchain-operating-system-bos-8004345d02ba")[INTRODUCING THE BLOCKCHAIN OPERATING SYSTEM (BOS)]
-  - #link("https://www.blockchain-council.org/blockchain/blockchain-operating-system-a-complete-overview/")[Blockchain Operating System: A Complete Overview]
-  - #link("https://www.cisin.com/coffee-break/all-about-blockchain-operating-system-os.html")[Blockchain OS: The Future of Operating Systems]
-  - #link("https://www.golinuxcloud.com/blockchain-operating-system/")[The Truth About Blockchain Operating System]
-]
+// #quote(block: true)[
+//   有关区块链操作系统的链接，在谷歌上搜索blockchain applications in operating systems获得：
+//   - #link("https://medium.com/nearprotocol/introducing-the-blockchain-operating-system-bos-8004345d02ba")[INTRODUCING THE BLOCKCHAIN OPERATING SYSTEM (BOS)]
+//   - #link("https://www.blockchain-council.org/blockchain/blockchain-operating-system-a-complete-overview/")[Blockchain Operating System: A Complete Overview]
+//   - #link("https://www.cisin.com/coffee-break/all-about-blockchain-operating-system-os.html")[Blockchain OS: The Future of Operating Systems]
+//   - #link("https://www.golinuxcloud.com/blockchain-operating-system/")[The Truth About Blockchain Operating System]
+// ]
 
-现阶段的主流区块链大多以用户程序的形式运行在Linux和Windows操作系统下。这样
+现阶段的主流区块链大多以用户程序的形式运行在Linux和Windows操作系统下。由于用户程序并不一定随系统启动且可以被用户随意启动关闭，这种区块链形式不一定能保证节点的在线时长，从而与区块链社区需要尽可能吸引新用户（即新的节点）加入网络建设，并留住已有的节点贡献者的宗旨相违背#footnote()[https://medium.com/nearprotocol/introducing-the-blockchain-operating-system-bos-8004345d02ba]。基于区块链的操作系统能够保证节点在系统工作时始终在线，从而为区块链网络的稳定运行提供保障。
 
-LibertyOS是世界上第一个区块链操作系统。LibertyOS 结合了区块链技术和加密货币技术，为操作系统用户创造了新的用户体验。LibertyOS的创始团队认为，现代操作系统将客户视为商品，可以出售给广告商和其他非政府组织或政府组织。像 Windows 和 macOS 这样的现代操作系统正在客户不知情的前提下从他们那里收集信息，甚至访问和操作用户的所有文件和数据。而LibertyOS 为这种情况提供了一个解决方案。LibertyOS 由操作系统的用户100% 拥有。没有必要连接到任何公司，所有的数据都是100% 你的。另一方面，LibertyOS 也为广告客户提供了接触他们客户的途径。这是通过一个点对点令牌模型完成的，该模型直接向广告的观众支付费用。LibertyOS 的本地令牌是 LIB 令牌。广告商必须支付 LIB 令牌和用户收到观看广告的 LIB 令牌。然后，用户可以使用这些 LIB 令牌向他们喜欢的项目捐款，这样就可以激励创建一个开放自由的开发者社区。然而，LibertyOS对现代操作系统的改良尚且停留在用户程序层面，它注重保护用户数据隐私安全性和提升用户体验，而并未使用区块链的优良特性对操作系统内核加以保护。
+再者，无论区块链网络本身的去中心化程度如何，用户始终需要某种“前端”（分布式应用程序，dApps）来和区块链“后端”（通常包含区块链网络及其上运行的智能合约等基础设施）交互，而前端的代码来源仍然是中心化的，例如从代码托管网站或软件下载站上获取。这造成了一个尴尬的情况：想访问去中心化网络，用户必须先通过中心化网络下载软件。这种需要额外前置步骤的实践会带来一定的风险。例如信任中介问题。区块链操作系统打破了这一局面，用户可以直接从操作系统中访问或开发dApps而无需额外从中心化网络中获得任何软件。所有dApps的代码和存储均位于链上，从而彻底将中心化网络排除在去中心化网络之外。
 
-NEAR在诞生之初只是一组普通的区块链协议。NEAR团队将他们的协议设计得简洁而灵活，并以三大特点博得了超10亿用户的青睐：易懂的账户表示法，Nightshade分片法和开发者友好的JavaScript开发套件。在日益风靡的Web 3.0浪潮下，NEAR团队与时俱进地将他们的协议升级为操作系统。
+区块链操作系统的概念定义尚有争议，一种较为流行的观点认为，区块链系统是一种网络操作系统，用户在设备上发出的指令被传送到云端的区块链网络上，进行身份验证、程序执行等操作后，结果数据将被返回给用户。NYNJA公司与Amgoo智能手机制造商建立了战略合作关系，以支持其基于区块链的 NYNJA 虚拟操作系统 (vOS)。这两家公司将与拉丁美洲的电信运营商合作，在设备激活时为 NYNJA vOS 用户提供初始数据块。vOS 支持提供文本、语音、视频会议和项目管理工具的通信层，用于商业交易的安全支付层，以及支持比特币、以太坊和所有 ERC-20 兼容代币的多币种钱包。在这种架构中，诸如挖矿等计算量大的任务在云端完成，移动设备仅负责发出操作请求和接收计算结果。
 
-总部位于香港的 NYNJA Group Ltd. 与 Amgoo 智能手机制造商建立了战略合作关系，以支持其基于区块链的 NYNJA 虚拟操作系统 (vOS)。这两家公司将与拉丁美洲的电信运营商合作，在激活时为 NYNJA vOS 用户提供初始数据块。vOS 支持提供文本、语音、视频会议和项目管理工具的通信层，用于商业交易的安全支付层，以及支持比特币、以太坊和所有 ERC-20 兼容代币的多币种钱包。
+区块链操作系统的另一种定义是在操作系统内核中提供区块链的功能。LibertyOS即是如此，它结合了区块链技术和加密货币技术，为操作系统用户创造了新的用户体验。LibertyOS的创始团队认为，现代操作系统将客户视为商品，在客户不知情的前提下从他们那里收集信息，甚至访问和操作用户的所有文件和数据，再出售给广告商和其他非政府组织或政府组织。而LibertyOS 为此提供了一个解决方案：系统中的所有东西都由操作系统的用户100%掌控。另一方面，LibertyOS 也为广告客户提供了接触他们客户的途径。这是通过一个点对点令牌模型完成的，称为LIB令牌。广告商必须支付LIB令牌用于广告投送，而用户可以使用LIB令牌向他们喜欢的项目捐款，以此激励创建一个开放自由的开发者社区。然而，LibertyOS对现代操作系统的改良尚且停留在用户程序层面，它注重保护用户数据隐私安全性和提升用户体验，而并未使用区块链的优良特性对上层应用的开发提供任何帮助。
 
 = 研究内容
 
