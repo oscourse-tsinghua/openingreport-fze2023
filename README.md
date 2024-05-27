@@ -10,7 +10,8 @@
 2. 将精简的Substrate Node Template移植到rCore中
    1. 将不能在no-std环境中运行的crate尽可能替换掉。
    2. 为剩下的不支持no-std环境的crate做适配。
-   3. 逐步移植、验证。
+   3. 逐步移植到用户态、验证。
+   4. 从内核态逐步移植到内核中。
 
 ## 第一步：剔除Substrate Node Template的死代码，精简之
 
@@ -158,10 +159,6 @@ export MIRAI_FLAGS="--call_graph_config $(pwd)/cg-config.json"
 ```bash
 cat graph.dot | dot -Tsvg
 ```
-
-## 2024.4.25
-
-### MIRAI配置选项
 
 MIRAI的配置文件有许多可自定义的选项，通过配置它们可以从不同角度获得许多很有用的信息。
 
