@@ -46,7 +46,7 @@
 
 * **拉低代码质量**: 死代码越多，可以认为团队的专业性越低，开发标准越宽松。
 
-### 相关工作
+### 已有技术方案
 
 #### JavaScript的[Tree Shaking](https://developer.mozilla.org/zh-CN/docs/Glossary/Tree_shaking)技术
 
@@ -107,11 +107,125 @@ JSNose采用了一种METRIC-BASED的方法来划分各种代码异味。这种�
 - **复杂反射的挑战**：文章指出，Java反射的使用给不可达方法的识别带来了挑战，尽管DUM在处理简单反射应用案例时表现出了准确性。
 - **GUI事件处理**：对于由用户动作触发的GUI事件的管理可能会影响不可达方法的识别，DUM在构建图基表示时考虑了这一点，但可能还有改进空间。
 
+### 其他相关工作
+
+#### MIRAI
+
+选择MIRAI有充足的原因。首先，它仍然在维护状态，仓库最后一次更新是在5个月前。虽然不算更新非常频繁，但也比其他最后一次更新在数年前的工具好太多了。其次，它利用MIR而不是LLVM IR进行分析，能够从更高层次获得LLVM IR中没有（或者被曲解）的信息。例如，LLVM IR中没有无符号整数类型，故所有的 `u32`到了LLVM IR中全变成了 `i32`，为分析横添困难。最后，它在上文中提及的函数调用图基准测试中取得了令人瞠目结舌的好成绩，除了涉及条件编译的测试用例只通过了50%以外，其他测试用例均是100%通过，爆杀LLVM  OPT。与Mirai相关的资料链接有这些：
+
+- [MIRAI仓库地址](https://github.com/facebookexperimental/MIRAI)
+
+  - [MIRAI安装指南](https://github.com/facebookexperimental/MIRAI/blob/main/documentation/InstallationGuide.md)
+  - [MIRAI函数调用图子功能叙述](https://github.com/facebookexperimental/MIRAI/blob/main/documentation/CallGraph.md)
+- [在基准测试中测试Mirai-CGG](https://github.com/ktrianta/rust-callgraph-benchmark/tree/master/evaluations/mirai-cgg)
+
+
+
+在安装和使用MIRAI的过程中，有几点需要注意：
+
+- 编译MIRAI时，cargo会使用其仓库中 `rust-toolchain.toml`所指定的 `nightly-2023-09-10`进行编译。笔者利用更新的nightly版本尝试编译未能通过。
+
+下面讨论使用MIRAI进行函数调用图生成的方法。本节内容基于[MIRAI函数调用图子功能叙述](https://github.com/facebookexperimental/MIRAI/blob/main/documentation/CallGraph.md)，结合笔者实操进行叙述。
+
+首先cd到待分析的rust crate根目录中（即该crate的 `Cargo.toml`所在的目录），然后运行 `cargo mirai`进行分析。此时大概率会报错，报错信息类似于 `error while loading shared libraries: librustc_driver-8e42xxxx.so`。这是因为MIRAI对rust版本的要求十分严格，需要编译MIRAI和编译待分析crate的rust版本一致。解决方案也较为简单，指定待分析crate使用 `nightly-2023-09-10`进行编译即可。虽然可以通过给待分析crate增添 `rust-toolchain.toml`来完成、或者通过在待分析crate根目录中运行 `rustup override set nightly-2023-09-10`来完成，笔者仍然推荐直接使用 `rustup default nightly-2023-09-10-x86_64-unknown-linux-gnu`将该版本nightly设置为全局版本，因为在下一步生成调用图时可能会出问题（指编译卡住不动，RAM占用率飙升）。
+
+想要生成函数调用图，还需设置 `MIRAI_FLAGS`环境变量。如此设置即可：
+
+```bash
+export MIRAI_FLAGS="--call_graph_config $(pwd)/cg-config.json"
+```
+
+一定一定要记得加 `export`不然MIRAI会探测不到这个环境变量。`$(pwd)/cg-config.json`表示生成调用图所使用的配置文件，本次生成使用的文件长这样：
+
+```json
+{
+    "call_sites_output_path": "./call-sites.json",
+    "dot_output_path": "./graph.dot",
+    "reductions": [],
+    "included_crates": [],
+    "datalog_config": {
+        "ddlog_output_path": "./graph.dat",
+        "type_map_output_path": "./types.json",
+        "datalog_backend": "DifferentialDatalog"
+    }
+}
+```
+
+其中字段的含义请参见[函数调用图字段含义](https://github.com/facebookexperimental/MIRAI/blob/main/documentation/CallGraph.md#Configuration)。
+
+设置好 `MIRAI_FLAGS`并运行 `cargo mirai`之后，一个名为 `graph.dot`的文件将会在待分析crate的根目录中生成，可以使用Graphviz工具进行可视化了：
+
+```bash
+cat graph.dot | dot -Tsvg
+```
+
+## 2024.4.25
+
+### MIRAI配置选项
+
+MIRAI的配置文件有许多可自定义的选项，通过配置它们可以从不同角度获得许多很有用的信息。
+
+#### call_sites_output_path
+
+JSON格式的文件。
+
+- `files`：数组，包含调用图中涉及到的源文件路径。
+
+  ```json
+  [
+      "src/main.rs",
+      "/rustc/8ed4537d7c238eb77509d82445cf1cb861a3b5ff/library/core/src/fmt/rt.rs",
+      "src/funcs.rs",
+      ...
+  ]
+  ```
+
+- `callable`：数组，每一项的内容如下。
+
+  ```json
+  [
+      {
+          "name": "/example_crate/main()->()",
+          // 函数定义的源文件在 files 数组中的索引
+          "file_index": 0,
+          // 在上述源文件中定义的行号
+          "first_line": 4,
+          // 意义暂时不明
+          "local": true
+      },
+      ...
+  ]
+  ```
+
+- `calls`：**重头戏！**数组，每一项都是一个五元组。
+
+  ```json
+  [
+      [
+          0, // source location源地址, files数组中的下标
+          5, // 行号
+          5, // 列号
+          0, // caller, callables数组中的下标 
+          1 // callee, callables数组中的下标 
+      ],
+      ...
+  ]
+  ```
+
+#### reductions
+
+数组，可能包含以下选项，可以裁剪调用图的内容。
+
+- `{"Slice": "函数名字"}`：MIRAI将返回以这个函数为树根的子调用图。
+- `"Fold"`：和下文`include_crates`配合使用，可以将`include_crates`之外的调用情况隐藏起来。举例：`include_crates = ["rust-pg"]`，那么`rust-pg`项目中调用的`/std/std::io::_print`函数就不会画在图里，但是在`callables`字段中还是能看到它们。
+- `"Deduplicate"`：指定此字段之后，调用图中的每个函数之间最多仅会有一条边相连，更加简化从而更好看。
+- `"Clean"`：将孤儿节点去除。
+
 ## 第二步：将精简的Substrate Node Template移植到rCore中
 
 相关的主题词：**操作系统内核、往内核中增加新的功能、系统调用**
 
-## no-std环境下的Rust
+### no-std环境下的Rust
 
 [Rust for Embedded Systems: Current State, Challenges and Open Problems (arxiv.org)](https://arxiv.org/abs/2311.05063)一文介绍了Rust在嵌入式开发领域的现状，并着重介绍了现阶段存在的问题。它通过采访、问卷等方式，收集获得了以下问题：
 
