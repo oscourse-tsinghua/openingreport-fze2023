@@ -272,3 +272,66 @@ month={1},
   numpages   = {13}
 }
 
+@inproceedings{Rupta,
+  author    = {Li, Wei and He, Dongjie and Gui, Yujiang and Chen, Wenguang and Xue, Jingling},
+  title     = {A Context-Sensitive Pointer Analysis Framework for Rust and Its Application to Call Graph Construction},
+  year      = {2024},
+  isbn      = {9798400705076},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/3640537.3641574},
+  doi       = {10.1145/3640537.3641574},
+  abstract  = {Existing program analysis tools for Rust lack the ability to effectively detect security vulnerabilities due to the absence of an accurate call graph and precise points-to information. We present Rupta, the first context-sensitive pointer analysis framework designed for Rust, with a particular focus on its role in constructing call graphs. Operating on Rust MIR, Rupta employs callsite-based context-sensitivity and on-the-fly call graph construction to address a range of pointer analysis challenges, including method/function calls, pointer casts, and nested structs, while preserving type information.
+
+               Our assessment of Rupta against two state-of-the-art call graph construction techniques, Rurta (Rapid Type Analysis-based) and Ruscg (static dispatch-only), across 13 real-world Rust programs demonstrates its high efficiency and precision. In particular, our results reveal that Rupta surpasses Ruscg in soundness by discovering 29\% more call graph edges and outperforms Rurta in precision by eliminating approximately 70\% of spurious dynamic call edges. Consequently, Rupta has the potential to enhance existing security analysis tools, enabling them to identify a greater number of security vulnerabilities in Rust programs.},
+  booktitle = {Proceedings of the 33rd ACM SIGPLAN International Conference on Compiler Construction},
+  pages     = {60–72},
+  numpages  = {13},
+  keywords  = {Call Graph Construction, Pointer Analysis, Rust},
+  location  = {<conf-loc>, <city>Edinburgh</city>, <country>United Kingdom</country>, </conf-loc>},
+  series    = {CC 2024}
+}
+
+@inproceedings{494744,
+  author    = {Tanaka, T. and Hakuta, M. and Iwata, N. and Ohminami, M.},
+  booktitle = {Proceedings of the 12th TRON Project International Symposium},
+  title     = {Approaches to making software porting more productive},
+  year      = {1995},
+  volume    = {},
+  number    = {},
+  pages     = {73-85},
+  keywords  = {Productivity;Impedance;Communication system software;Databases;Communication system control;Laboratories;Operating systems;Testing;Software libraries;Electronics packaging},
+  doi       = {10.1109/TRON.1995.494744}
+}
+
+@article{HAKUTA1997145,
+  title    = {A study of software portability evaluation},
+  journal  = {Journal of Systems and Software},
+  volume   = {38},
+  number   = {2},
+  pages    = {145-154},
+  year     = {1997},
+  issn     = {0164-1212},
+  doi      = {https://doi.org/10.1016/S0164-1212(96)00118-5},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0164121296001185},
+  author   = {Mitsuari Hakuta and Masato Ohminami},
+  abstract = {The authors propose a model for estimating the cost of software porting, based on program characteristics and other factors (porting impediment factors). We first clarify the porting impediment factors and define evaluation criteria for each factor. A model for evaluating porting cost is derived from these factors. The applicability of the model framework is confirmed by porting various programs. Measures for reducing porting cost are proposed, and their effects are estimated using the model. The proposed model can be used to estimate porting cost and to evaluate porting productivity as well as the productivity of each stage of the porting process.}
+}
+
+@article{PortingAndLoC,
+  author     = {Wolberg, John R.},
+  title      = {Comparing the cost of software conversion to the cost of reprogramming},
+  year       = {1981},
+  issue_date = {April 1981},
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {16},
+  number     = {4},
+  issn       = {0362-1340},
+  url        = {https://doi.org/10.1145/988131.988144},
+  doi        = {10.1145/988131.988144},
+  journal    = {SIGPLAN Not.},
+  month      = {apr},
+  pages      = {104–110},
+  numpages   = {7}
+}
