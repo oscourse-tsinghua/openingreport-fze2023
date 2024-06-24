@@ -7,10 +7,10 @@
 目前按照笔者理解，“将Substrate移植到rCore中”大概需要这么几步：
 
 1. 剔除Substrate Node Template的死代码，精简之
-2. 将精简的Substrate Node Template移植到rCore中
+2. 将精简的Substrate Node Template移植到其他OS中
    1. 将不能在no-std环境中运行的crate尽可能替换掉。
    2. 为剩下的不支持no-std环境的crate做适配。
-   3. 逐步移植到用户态、验证。
+   3. 探究Linux内核融入Rust代码的操作方式。
    4. 从内核态逐步移植到内核中。
 
 ## 第一步：剔除Substrate Node Template的死代码，精简之
@@ -25,7 +25,7 @@
 
 - 在软件工程领域：
   - Brown等人在其[书](https://www.wiley.com/en-us/AntiPatterns%3A+Refactoring+Software%2C+Architectures%2C+and+Projects+in+Crisis-p-9780471197133)中将死代码定义为：在不断变化的软件设计中始终未移除的未使用代码。
-  - Mantyla等人[1]认为：死代码就是过去使用过，但目前已不会再被执行的源代码。
+  - Mantyla等人 [1]认为：死代码就是过去使用过，但目前已不会再被执行的源代码。
   - Wake [2]将未使用的变量、函数参数、类成员属性、类方法和类本身视为死代码。
   - Martin [3]将死代码定义为从未执行过的代码（例如永假if内的语句块），而死函数是永远不会被调用的方法。
 - 在程序设计语言领域：
@@ -218,7 +218,7 @@ JSON格式的文件。
 - `"Deduplicate"`：指定此字段之后，调用图中的每个函数之间最多仅会有一条边相连，更加简化从而更好看。
 - `"Clean"`：将孤儿节点去除。
 
-## 第二步：将精简的Substrate Node Template移植到rCore中
+## 第二步：将精简的Substrate Node Template移植到其他OS中
 
 相关的主题词：**操作系统内核、往内核中增加新的功能、系统调用**
 
@@ -228,3 +228,162 @@ JSON格式的文件。
 
 - 社区支持问题：许多开发者觉得缺少文档（尤其是例子）难以开发
 - 依赖项兼容性问题：x86架构平台上的crate依赖于其他库或框架，而这些库或框架在嵌入式设备上不可用/不兼容
+
+### Linux中的Rust开发
+
+目前收集到的信息主要介绍了这几个话题：
+
+- 为Linux增加系统调用（似乎是个OS课的实验，说明这个事情不难做）
+  - [linux-syscall](https://dics.rs/linux-syscall) crate提供了一个宏，能够直接在Rust源代码中调用Linux系统调用
+- Linux对Rust的支持性（[Rust for Linux](https://rust-for-linux.com/)）
+- Rust Libloading（加载动态库？这是个啥？）
+
+### 简单的C代码调用Rust函数的方法
+
+首先创建一个Rust的lib项目：
+
+```sh
+cargo new example_lib --lib
+```
+
+然后正常写代码（这里为crate添加`fastrand`依赖的部分就省去了）：
+
+```rust
+#[no_mangle] // 阻止编译器对函数名进行重命名，必须
+#[export_name = "get_random_u32"] // 进一步规定导出的函数的名字，必须
+pub extern "C" fn get_random_u32() -> u32 {
+    let mut rng = Rng::new();
+    rng.u32(1..=100)
+}
+```
+
+C代码如此编写：
+
+```c
+#include <stdio.h>
+
+extern int inc(int x);
+extern int get_random_u32();
+
+int main() {
+    int x = get_random_u32();
+    printf("%d\n", x);
+    return 0;
+}
+```
+
+最后**混合编译**并**运行**：
+
+```sh
+cargo build --release
+gcc test.c -L ./target/release/ -l example_lib -o main
+LD_LIBRARY_PATH=./target/release/ ./main
+```
+
+经过测试发现`get_random_u32`可以正常调用，并且返回一个随机数。这也证明在Rust库中**包含一些依赖crate是完全可行的**。
+
+### 为WSL 2内核增加系统调用的方法
+
+#### 用C编写系统调用
+
+参考这个[帖子](https://dev.to/jasper/adding-a-system-call-to-the-linux-kernel-5-8-1-in-ubuntu-20-04-lts-2ga8)。首先把内核（版本为5.15.153.1）代码解压到`A`目录中。
+
+1. 在`A`目录中新建`hello_world`目录，于其中新建两个文件。
+    ```c
+    // hello_world/hello_world.c
+    #include <linux/kernel.h>
+    #include <linux/syscalls.h>
+    
+    SYSCALL_DEFINE0(hello_world) {
+        printk("Hello world from the kernel!\n");
+        return 820;
+    }
+    
+    // hello_world/Makefile
+    obj-y := hello_world.o
+    ```
+2. 在`A`目录中打开Makefile，找到第二个`core-y`并改成这样：
+    ```makefile
+    core-y += kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ hello_world/ # 最后一个是新加的
+    ```
+3. 编辑`A/include/linux/syscalls.h`，在1269行后面加上：
+    ```c
+    /* my hello world syscall */
+    asmlinkage long sys_hello_world(void);
+    ```
+4. 编辑`A/arch/x86/entry/syscalls/syscall_64.tbl`，在最后加上：
+    ```
+    548 common hello_world sys_hello_world
+    ```
+
+在内核版本6.1.21.2中也类似，但是有一些不同：
+
+1. 在`A`目录中新建`hello_kernel`目录，于其中新建两个文件。
+    ```c
+    // A/hello_kernel/sys_hello_kernel.c
+    #include <linux/kernel.h>
+    #include <linux/syscalls.h>
+    
+    SYSCALL_DEFINE0(hello_kernel) {
+        printk("Hello world from the kernel!\n");
+        return 820;
+    }
+    
+    // A/hello_kernel/Makefile
+    obj-y := sys_hello_kernel.o
+    ```
+2. 在`A`目录中打开Makefile，找到第一个`core-y`并改成这样：
+    ```makefile
+    core-y := hello_world/ # 原来这儿是空的
+    ```
+3. 编辑`A/include/linux/syscalls.h`，在1272行后面加上：
+    ```c
+    /* my hello world syscall */
+    asmlinkage long sys_hello_kernel(void);
+    ```
+4. 编辑`A/arch/x86/entry/syscalls/syscall_64.tbl`，在最后加上：
+    ```
+    548 common hello_kernel sys_hello_kernel
+    ```
+
+#### 使用该系统调用
+
+以内核版本6.1.21.2为例。编写C语言代码：
+
+```c
+// #include <errno.h>
+#include <linux/kernel.h>
+#include <stdio.h>
+// #include <string.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+#define SYS_HELLO_KERNEL 548
+
+int main(int argc, char* argv[]) {
+    long ret_val = syscall(SYS_HELLO_KERNEL);
+
+    if (ret_val < 0) {
+        perror("Error calling hello_kernel syscall");
+        return -1;
+    } else {
+        printf("Success! Returned value: %ld\n", ret_val);
+        return 0;
+    }
+}
+```
+
+用`gcc -o main main.c`编译后，输出`Success! Returned value: 820`。在使用`dmesg`指令查看内核输出：
+
+```
+...
+[    2.884953] systemd-journald[40]: Received client request to flush runtime journal.
+[    4.659311] WSL (2): Creating login session for endericedragon
+[   49.131662] hv_balloon: Max. dynamic memory size: 36548 MB
+[  261.964422] Hello world from the kernel!
+```
+
+### Linux模块相关知识
+
+[在 WSL2 环境下安装 linyx-headers](https://oftime.net/2021/01/16/win-bpf/)
+
