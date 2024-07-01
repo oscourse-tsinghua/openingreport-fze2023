@@ -102,7 +102,18 @@ Rupta@Rupta 是一款上下文敏感指针分析框架，观察其代码库易�
 
 Substrate由以太坊项目的联合创始人Gavin Wood率领Parity团队开发，是一个基于rust的开源区块链框架。它对于多链结构提供了较好的支持，能够克服传统单链区块链在一条链上保有大量用户、存储大量信息，导致运行效率降低的问题，且针对多链间通信提出了一套解决方案。不仅如此，高度可定制的灵活模块化设计模式，使得Substrate能够以功能模块（称之为pallet）为单位进行组件增删，令开发者得以将Substrate打造成最契合他们需求的区块链。
 
-Substrate完全基于rust编程语言开发，其代码库大小适中，既能体现本选题提出的死代码探测方案的泛用性，又不至于因代码量过大导致分析过分繁杂。此外，区块链技术与操作系统内核的融合领域的研究工作较少，本课题亦可借此机会探索区块链技术与操作系统融合的形式，探究此举对操作系统技术发展的意义。
+目前，官方已推出了便于开发者开发的Substrate Node Template（下简称为SNT）#footnote("https://github.com/substrate-developer-hub/substrate-node-template")。它完全基于rust编程语言开发，内含一个包含最基本功能的Substrate全节点实现。其代码库大小适中，既能体现本选题提出的死代码探测方案的泛用性，又不至于因代码量过大导致分析过分繁杂。此外，区块链技术与操作系统内核的融合领域的研究工作较少，本课题亦可借此机会探索区块链技术与操作系统融合的形式，探究此举对操作系统技术发展的意义。
+
+==== SNT的代码结构
+
+SNT的代码库如图@img2 所示，其本质是一个Rust工作空间（workspace），内含三个成员：node, runtime和pallets。这其中，pallets成员存储SNT使用的所有自定义功能模块（即上文中提及的pallet），内仅含一个模板pallet，称之为template；runtime成员主要定义了SNT在运行时的链上状态转换逻辑，为单`lib.rs`文件结构；node成员负责P2P网络通信、区块产生和确认（finalization）、处理外部RPC请求等链外事务，内含多个源代码文件，有继续细分的必要。
+
+代码阅读分析的结果表明，node成员以8份rust源代码组成，其中`lib.rs`负责将自身的`rpc`，`chain_spec`与`service`模块暴露给外界使用，而`main.rs`仅负责启动`commands`模块中的`run`函数。
+
+#figure(
+  image("report.assets/SNT代码结构.png", width: 60%),
+  caption: [Substrate Node Template代码结构]
+)<img2>
 
 === 软件移植研究现状
 
@@ -191,9 +202,12 @@ MIRAI和Rupta均工作在rust编程语言的MIR中间表示上，其最小分析
 MIRAI实现了该特征中的`after_analysis`回调方法，该回调方法在rustc编译获得MIR之后，继续降层为LLVM IR之前调用，可获得编译器在将源代码编译到MIR中间表示中收集的所有信息。通过该方法，MIRAI进行了自顶向下，由最大范围的rust包（crate）级分析到最小范围的函数调用级分析的过程，其调用链大致如@img1 所示。
 
 #figure(
+  image("report.assets/mirai.svg", width: 60%),
   caption: [MIRAI的调用链]
-)[#image("mirai.svg", width: 60%)]<img1>
+)<img1>
+
 #blank
+
 现阶段，MIRAI的输出存在函数调用信息不全导致查全率低、函数所属Crate相关信息缺失导致死代码探测工作困难等问题。因此，需要通过在调用链中的合适层级修改代码，以满足死代码探测必须的信息需求。同时，重构或另外实现一套信息输出机制，以合理的、有利于标识死代码的结构展示分析结果。预期的分析结果条目大致如下：
 
 - crate信息
