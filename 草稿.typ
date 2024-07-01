@@ -108,12 +108,29 @@ Substrate由以太坊项目的联合创始人Gavin Wood率领Parity团队开发�
 
 SNT的代码库如图@img2 所示，其本质是一个Rust工作空间（workspace），内含三个成员：node, runtime和pallets。这其中，pallets成员存储SNT使用的所有自定义功能模块（即上文中提及的pallet），内仅含一个模板pallet，称之为template；runtime成员主要定义了SNT在运行时的链上状态转换逻辑，为单`lib.rs`文件结构；node成员负责P2P网络通信、区块产生和确认（finalization）、处理外部RPC请求等链外事务，内含多个源代码文件，有继续细分的必要。
 
-代码阅读分析的结果表明，node成员以8份rust源代码组成，其中`lib.rs`负责将自身的`rpc`，`chain_spec`与`service`模块暴露给外界使用，而`main.rs`仅负责启动`commands`模块中的`run`函数。
+代码阅读的结果表明，node成员以8份rust源代码组成，其中：
+
+- `lib.rs`负责将自身的`rpc`，`chain_spec`与`service`模块暴露给外界使用，而`main.rs`仅负责启动`command`模块中的`run`函数。它们并未为SNT实现更多功能，在后续代码分析时可以忽略。
+- `cli`模块定义了一系列子命令，而`command`模块则利用前者定义的子命令结合用户传入的命令行参数进行解析，并根据之采取不同的行为。二者联合为SNT提供了命令行参数解析的服务，可以在逻辑上合并为一个逻辑模块。
+- `chain_spec`模块实现了初始化链时的配置选项，例如链的命名与唯一标识，链中预置的账户信息和账户余额等等。
+- `rpc`
+- `service`
+- `benchmarking`
 
 #figure(
-  image("report.assets/SNT代码结构.png", width: 60%),
+  image("report.assets/SNT代码结构.drawio.png", width: 80%),
   caption: [Substrate Node Template代码结构]
 )<img2>
+#blank
+
+SNT的大致依赖关系如@img3 所示。结合上文对各模块功能的描述，可给出一拓扑排序，指示令SNT自底向上摆脱具体操作系统依赖的实现顺序。
+
+#figure(
+  image("report.assets/SNT大致依赖关系.png", width: 80%),
+  caption: [Substrate Node Template大致依赖关系]
+)<img3>
+
+#blank
 
 === 软件移植研究现状
 
