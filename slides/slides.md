@@ -8,6 +8,7 @@ theme: purplin
 
 # 开题报告：基于rCore的区块链操作系统设计与实现
 <p>
+  指导老师：陆慧梅<br>
   汇报人：傅泽
 </p>
 
@@ -173,6 +174,36 @@ Substrate区块链采用了服务器-客户端架构。它提供了名为Substra
 - 智能合约支持
 
 综合以上功能特性的重要程度及实现难度,本课题计划优先支持四三个功能特性，即网络连接、区块管理、账号管理和交易支持功能。在此基础上，尝试实现有关智能合约的支持功能。
+
+<BarBottom  title="基于rCore的区块链操作系统设计与实现">
+  <Item text="系统架构">
+    <carbon:link />
+  </Item>
+  <Item text="关键问题">
+    <carbon:link />
+  </Item>
+  <Item text="技术方案">
+    <carbon:link />
+  </Item>
+  <Item text="预期结果">
+    <carbon:link />
+  </Item>
+</BarBottom>
+
+---
+
+# 预期结果
+
+<img>
+
+时间安排表大致如下：
+
+- 2023.09-2024.01：文献阅读，调研区块链技术与操作系统融合领域的研究现状。
+- 2024.01-2024.02：开题，确定研究目标。
+- 2024.02-2024.05：将Substrate api client和Substrate Note Template移植到rCore的用户态，补全缺少的系统组件。
+- 2024.05-2024.06：将Substrate api client和Substrate Note Template集成到rCore的内核态，补全缺少的系统组件。
+- 2024.06-2025.01：将用户态中的Substrate区块链和内核态中的Substrate进行性能对比测试；学位论文写作。
+- 2025.01-2025.06：完善学位论文写作，最终答辩。
 
 <BarBottom  title="基于rCore的区块链操作系统设计与实现">
   <Item text="系统架构">

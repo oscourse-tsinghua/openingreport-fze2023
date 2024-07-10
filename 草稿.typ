@@ -130,7 +130,32 @@ SNT的大致依赖关系如@img3 所示。结合上文对各模块功能的描�
   caption: [Substrate Node Template大致依赖关系]
 )<img3>
 
-#blank
+==== SNT与具体操作系统的耦合程度
+
+显然地，软件移植的难度与其与某具体操作系统的耦合程度呈负相关关系。同时，同一个软件的不同组成部分对具体操作系统的依赖性亦有所不同。例如生成随机数、计算密钥对和定义声明宏等操作，它们几乎不依赖具体操作系统提供的服务，因而可以在诸如rCore等由纯Rust实现的操作系统内核中作为依赖项直接引用。而诸如命令行参数解析、协程管理等操作需要操作系统提供的服务代为管理软硬件资源，因而无法直接在纯Rust实现的操作系统中运行。
+
+为评估将SNT移植入内核的难易程度，有必要对SNT的一级依赖项与操作系统的耦合度进行评估。以rCore为基底，逐一尝试将它们作为依赖项引入rCore的Cargo清单文件中，并观察编译是否顺利结束，从而得出了以下结果：
+
+- `pallets/template`组件：5个依赖项中的3个与rCore兼容。
+- `runtime`组件：29个依赖项中的7个与rCore兼容。
+- ``组件：37个依赖项中的2个与rCore兼容。
+
+根据依赖项的命名规则不同，亦能发现一些规律：
+
+#figure(
+  table(
+    columns: 2,
+    [依赖项命名前缀], [与rCore的兼容性情况],
+
+    [`frame_*`], [大多无法兼容],
+    [`pallet_*`], [完全无法兼容],
+    [`sp_*`], [大约有五成可兼容],
+    [`sc_*`], [完全无法兼容],
+  ),
+  caption: [依赖项与rCore的兼容性情况]
+)<tbl1>
+
+
 
 === 软件移植研究现状
 
@@ -142,54 +167,7 @@ SNT的大致依赖关系如@img3 所示。结合上文对各模块功能的描�
 
 上述两项工作的共同结论之一是，代码行数的增加会令移植工作更具挑战性。这从侧面证明了本选题所采取技术手段的合理性：通过移除不必要的代码，减少代码行数，从而降低移植工作难度，提升移植效率。
 
-=== rust与Linux内核开发
 
-==== rust与C的互操作性
-
-作为系统级编程语言，rust亦响应社区呼吁，推出了对C语言的兼容性支持。换言之，在Rust中编写的函数，通过链接后可以在C语言代码中调用。
-
-首先创建一个Rust的lib项目：
-
-```sh
-cargo new example_lib --lib
-```
-#blank
-然后编写如下示例代码（略去了为该项目添加`fastrand`依赖的Cargo指令）：
-
-```rust
-#[no_mangle] // 阻止编译器对函数名进行重命名，必须
-#[export_name = "get_random_u32"] // 进一步规定导出的函数的名字，必须
-pub extern "C" fn get_random_u32() -> u32 {
-    let mut rng = Rng::new();
-    rng.u32(1..=100)
-}
-```
-#blank
-
-C代码如下编写即可编写：
-
-```c
-#include <stdio.h>
-
-extern int inc(int x);
-extern int get_random_u32();
-
-int main() {
-    int x = get_random_u32();
-    printf("%d\n", x);
-    return 0;
-}
-```
-#blank
-最后混合编译并运行：
-
-```sh
-cargo build --release
-gcc test.c -L ./target/release/ -l example_lib -o main
-LD_LIBRARY_PATH=./target/release/ ./main
-```
-#blank
-经过测试发现`get_random_u32`可以正常调用，并且返回一个随机数。这也证明混合编程时在Rust库中包含依赖项（例如该例中的`fastrand`）是完全可行的。
 
 = 研究内容
 
