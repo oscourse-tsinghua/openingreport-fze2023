@@ -116,7 +116,7 @@ Substrate由以太坊项目的联合创始人Gavin Wood率领Parity团队开发�
 
 ==== SNT的代码结构
 
-SNT的代码库如图@img1 所示，其本质是一个Rust工作空间（workspace），内含三个成员：node, runtime和pallets。这其中，pallets成员存储SNT使用的所有自定义功能模块（即上文中提及的pallet），内仅含一个模板pallet，称之为template；runtime成员主要定义了SNT在运行时的链上状态转换逻辑，为单`lib.rs`文件结构；node成员负责P2P网络通信、区块产生和确认（finalization）、处理外部RPC请求等链外事务，内含多个源代码文件，有继续细分的必要。
+SNT的代码库如@img1 所示，其本质是一个Rust工作空间（workspace），内含三个成员：node, runtime和pallets。这其中，pallets成员存储SNT使用的所有自定义功能模块（即上文中提及的pallet），内仅含一个模板pallet，称之为template；runtime成员主要定义了SNT在运行时的链上状态转换逻辑，为单`lib.rs`文件结构；node成员负责P2P网络通信、区块产生和确认（finalization）、处理外部RPC请求等链外事务，内含多个源代码文件，有继续细分的必要。
 
 代码阅读的结果表明，node成员以8份rust源代码组成，其中：
 
