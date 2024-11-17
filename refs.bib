@@ -1,3 +1,36 @@
+@techreport{treeshaking,
+  author      = {杨健},
+  institution = {浙江大学},
+  title       = {Deep Dive into Rspack & Webpack Tree Shaking},
+  year        = {2024},
+  url         = {https://github.com/orgs/web-infra-dev/discussions/17}
+}
+
+@article{codereuse,
+  title    = {CODE reuse in practice: Benefiting or harming technical debt},
+  journal  = {Journal of Systems and Software},
+  volume   = {167},
+  pages    = {110618},
+  year     = {2020},
+  issn     = {0164-1212},
+  doi      = {https://doi.org/10.1016/j.jss.2020.110618},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0164121220300960},
+  author   = {Daniel Feitosa and Apostolos Ampatzoglou and Antonios Gkortzis and Stamatia Bibi and Alexander Chatzigeorgiou},
+  keywords = {Technical debt, Reuse, Case study},
+  abstract = {During the last years the TD community is striving to offer methods and tools for reducing the amount of TD, but also understand the underlying concepts. One popular practice that still has not been investigated in the context of TD, is software reuse. The aim of this paper is to investigate the relation between white-box code reuse and TD principal and interest. In particular, we target at unveiling if the reuse of code can lead to software with better levels of TD. To achieve this goal, we performed a case study on approximately 400 OSS systems, comprised of 897 thousand classes, and compare the levels of TD for reused and natively-written classes. The results of the study suggest that reused code usually has less TD interest; however, the amount of principal in them is higher. A synthesized view of the aforementioned results suggest that software engineers shall opt to reuse code when necessary, since apart from the established reuse benefits (i.e., cost savings, increased productivity, etc.) are also getting benefits in terms of maintenance. Apart from understanding the phenomenon per se, the results of this study provide various implications to research and practice.}
+}
+
+@article{compilevsinterpret,
+  title   = {Qualitative Assessment of Compiled, Interpreted and Hybrid Programming Languages},
+  journal = {Communications on Applied Electronics},
+  volume  = {7},
+  pages   = {8-13},
+  year    = {2017},
+  issn    = {2394-4714},
+  doi     = {10.5120/cae2017652685},
+  author  = {Ernest Kwame Ampomah and Ezekiel Mensah and Abilimi Gilbert}
+}
+
 @article{cg_rtl,
   title   = {基于RTL的函数调用图生成工具CG-RTL},
   author  = {孙卫真 and 杜香燕 and 向勇 and 汤卫东 and 侯鸿儒},
@@ -10,27 +43,27 @@
 
 
 @article{dcg_rtl,
-author={向勇 and 汤卫东 and 杜香燕 and 孙卫真},
-title={ 基于内核跟踪的动态函数调用图生成方法 },
-organization={清华大学 and 首都师范大学},
-journal={计算机应用研究},
-year={2015},
-volume={32},
-number={4},
-pages={1095-1099},
-month={1},
+  author       = {向勇 and 汤卫东 and 杜香燕 and 孙卫真},
+  title        = { 基于内核跟踪的动态函数调用图生成方法 },
+  organization = {清华大学 and 首都师范大学},
+  journal      = {计算机应用研究},
+  year         = {2015},
+  volume       = {32},
+  number       = {4},
+  pages        = {1095-1099},
+  month        = {1}
 }
 
 @article{dbcg_rtl,
-author={贾荻 and 向勇 and 孙卫真 and 曹睿东},
-title={ 基于数据库的在线函数调用图工具 },
-organization={首都师范大学 and 清华大学},
-journal={小型微型计算机系统},
-year={2016},
-volume={37},
-number={3},
-pages={422-427},
-month={1},
+  author       = {贾荻 and 向勇 and 孙卫真 and 曹睿东},
+  title        = { 基于数据库的在线函数调用图工具 },
+  organization = {首都师范大学 and 清华大学},
+  journal      = {小型微型计算机系统},
+  year         = {2016},
+  volume       = {37},
+  number       = {3},
+  pages        = {422-427},
+  month        = {1}
 }
 
 @article{Prazi,
@@ -282,7 +315,7 @@ month={1},
   url       = {https://doi.org/10.1145/3640537.3641574},
   doi       = {10.1145/3640537.3641574},
   abstract  = {Existing program analysis tools for Rust lack the ability to effectively detect security vulnerabilities due to the absence of an accurate call graph and precise points-to information. We present Rupta, the first context-sensitive pointer analysis framework designed for Rust, with a particular focus on its role in constructing call graphs. Operating on Rust MIR, Rupta employs callsite-based context-sensitivity and on-the-fly call graph construction to address a range of pointer analysis challenges, including method/function calls, pointer casts, and nested structs, while preserving type information.
-
+               
                Our assessment of Rupta against two state-of-the-art call graph construction techniques, Rurta (Rapid Type Analysis-based) and Ruscg (static dispatch-only), across 13 real-world Rust programs demonstrates its high efficiency and precision. In particular, our results reveal that Rupta surpasses Ruscg in soundness by discovering 29\% more call graph edges and outperforms Rurta in precision by eliminating approximately 70\% of spurious dynamic call edges. Consequently, Rupta has the potential to enhance existing security analysis tools, enabling them to identify a greater number of security vulnerabilities in Rust programs.},
   booktitle = {Proceedings of the 33rd ACM SIGPLAN International Conference on Compiler Construction},
   pages     = {60–72},
