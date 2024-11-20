@@ -315,7 +315,7 @@
   url       = {https://doi.org/10.1145/3640537.3641574},
   doi       = {10.1145/3640537.3641574},
   abstract  = {Existing program analysis tools for Rust lack the ability to effectively detect security vulnerabilities due to the absence of an accurate call graph and precise points-to information. We present Rupta, the first context-sensitive pointer analysis framework designed for Rust, with a particular focus on its role in constructing call graphs. Operating on Rust MIR, Rupta employs callsite-based context-sensitivity and on-the-fly call graph construction to address a range of pointer analysis challenges, including method/function calls, pointer casts, and nested structs, while preserving type information.
-               
+
                Our assessment of Rupta against two state-of-the-art call graph construction techniques, Rurta (Rapid Type Analysis-based) and Ruscg (static dispatch-only), across 13 real-world Rust programs demonstrates its high efficiency and precision. In particular, our results reveal that Rupta surpasses Ruscg in soundness by discovering 29\% more call graph edges and outperforms Rurta in precision by eliminating approximately 70\% of spurious dynamic call edges. Consequently, Rupta has the potential to enhance existing security analysis tools, enabling them to identify a greater number of security vulnerabilities in Rust programs.},
   booktitle = {Proceedings of the 33rd ACM SIGPLAN International Conference on Compiler Construction},
   pages     = {60–72},
@@ -400,3 +400,52 @@
   isbn      = {978-1-4020-8159-0}
 }
 
+@inproceedings{ai_and_code_errors,
+  author    = {Brun, Y. and Ernst, M.D.},
+  booktitle = {Proceedings. 26th International Conference on Software Engineering},
+  title     = {Finding latent code errors via machine learning over program executions},
+  year      = {2004},
+  volume    = {},
+  number    = {},
+  pages     = {480-490},
+  keywords  = {Machine learning;Testing;Programming profession;Computer errors;Support vector machines;Support vector machine classification;Decision trees;Classification tree analysis;Laboratories;Computer science},
+  doi       = {10.1109/ICSE.2004.1317470}
+}
+
+@inproceedings{through_lens_of_dead_code_elimination,
+  author    = {Theodoridis, Theodoros and Rigger, Manuel and Su, Zhendong},
+  title     = {Finding missed optimizations through the lens of dead code elimination},
+  year      = {2022},
+  isbn      = {9781450392051},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/3503222.3507764},
+  doi       = {10.1145/3503222.3507764},
+  booktitle = {Proceedings of the 27th ACM International Conference on Architectural Support for Programming Languages and Operating Systems},
+  pages     = {697–709},
+  numpages  = {13},
+  keywords  = {compilers, missed optimizations, testing},
+  location  = {Lausanne, Switzerland},
+  series    = {ASPLOS '22}
+}
+
+@inproceedings{unused_code_matters,
+  author    = {Eder, Sebastian and Junker, Maximilian and Jürgens, Elmar and Hauptmann, Benedikt and Vaas, Rudolf and Prommer, Karl-Heinz},
+  booktitle = {2012 34th International Conference on Software Engineering (ICSE)},
+  title     = {How much does unused code matter for maintenance?},
+  year      = {2012},
+  volume    = {},
+  number    = {},
+  pages     = {1102-1111},
+  keywords  = {Maintenance engineering;Assembly;Software systems;Business;Information systems;Production;Software maintenance;dynamic analysis;unnecessary code;unused code},
+  doi       = {10.1109/ICSE.2012.6227109}
+}
+
+@article{Ray2012ACS,
+  title   = {A case study of cross-system porting in forked projects},
+  author  = {Baishakhi Ray and Miryung Kim},
+  journal = {Proceedings of the ACM SIGSOFT 20th International Symposium on the Foundations of Software Engineering},
+  year    = {2012},
+  volume  = {},
+  pages   = {}
+}
